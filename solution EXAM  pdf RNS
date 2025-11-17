@@ -1,0 +1,324 @@
+//Create a database called “StudentDB” in mongodb. ➢ Create a Collection named “students”.
+➢ Create a Collection named “faculties”.
+
+1. Create a Database called StudentDB
+In MongoDB, you don’t explicitly create a database; it gets created automatically when you
+first insert data into it.
+But you can switch to the database first:
+use StudentDB
+
+2. Create a Collection named students
+Collections are also created automatically when you insert the first document. But if you
+want to explicitly create it:
+db.createCollection(&quot;students&quot;)
+
+3. Create a Collection named faculties
+db.createCollection(&quot;faculties&quot;)
+
+✅ Now your database structure is ready:
+ Database → StudentDB
+ Collections → students, faculties
+
+Insert a single document into both collections name “students” and “faculties”. Insert
+multiple documents(Atleast 4) into both collections name “students” and “faculties”.
+Perfect �� Let’s extend what we built in MongoDB. We already created
+ Database: StudentDB
+ Collections: students and faculties
+Now we’ll insert single and multiple documents into both.
+
+
+
+
+
+1. Insert a Single Document into students
+db.students.insertOne({
+
+student_id: 1,
+name: &quot;Ravi Kumar&quot;,
+age: 20,
+course: &quot;BCA&quot;,
+semester: 3
+})
+
+2. Insert a Single Document into faculties
+db.faculties.insertOne({
+faculty_id: 101,
+name: &quot;Dr. Meena Sharma&quot;,
+department: &quot;Computer Science&quot;,
+designation: &quot;Assistant Professor&quot;
+})
+
+3. Insert Multiple Documents into students (at least 4)
+db.students.insertMany([
+{
+student_id: 2,
+name: &quot;Priya Patel&quot;,
+age: 19,
+course: &quot;BBA&quot;,
+semester: 1
+},
+{
+student_id: 3,
+name: &quot;Amit Singh&quot;,
+age: 21,
+course: &quot;BCA&quot;,
+
+semester: 5
+},
+{
+student_id: 4,
+name: &quot;Neha Verma&quot;,
+age: 20,
+course: &quot;BSc IT&quot;,
+semester: 3
+},
+{
+student_id: 5,
+name: &quot;Arjun Reddy&quot;,
+age: 22,
+course: &quot;MBA&quot;,
+semester: 1
+}
+])
+
+4. Insert Multiple Documents into faculties (at least 4)
+db.faculties.insertMany([
+{
+faculty_id: 102,
+name: &quot;Prof. Rajesh Gupta&quot;,
+department: &quot;Management&quot;,
+designation: &quot;Professor&quot;
+},
+{
+faculty_id: 103,
+name: &quot;Dr. Kavita Joshi&quot;,
+
+department: &quot;Information Technology&quot;,
+designation: &quot;Associate Professor&quot;
+},
+{
+faculty_id: 104,
+name: &quot;Mr. Sanjay Desai&quot;,
+department: &quot;Commerce&quot;,
+designation: &quot;Lecturer&quot;
+},
+{
+faculty_id: 105,
+name: &quot;Dr. Anjali Mehta&quot;,
+department: &quot;Computer Science&quot;,
+designation: &quot;Professor&quot;
+}
+])
+
+✅ Now your database StudentDB has:
+ students collection → 5 students (1 single + 4 multiple)
+ faculties collection → 5 faculties (1 single + 4 multiple)
+
+You said:
+Display all available databasses. Display all documents in a collection “students”. Display
+only name and course field in “students” collection. Display only name and department field
+in “faculties” collection.
+
+1. Display all available databases
+show dbs
+
+2. Display all documents in a collection students
+
+db.students.find()
+�� This will return every document inside students.
+
+3. Display only name and course field in students collection
+We use projection for this:
+db.students.find({}, { name: 1, course: 1, _id: 0 })
+ {} → means no filter (select all docs).
+ { name: 1, course: 1, _id: 0 } → show only name and course, hide _id.
+
+4. Display only name and department field in faculties collection
+db.faculties.find({}, { name: 1, department: 1, _id: 0 })
+
+You said:
+Find Students whose age is greater than 20. Find students whose age is greater than 20 and
+score is less than 80. Find all students who live in “surat” or “vadodara”. Find all students
+whose course is BCA in the “students” collection.
+
+1. Find Students whose age is greater than 20
+db.students.find({ age: { $gt: 20 } })
+
+2. Find Students whose age is greater than 20 AND score is less than 80
+�� Make sure your student documents also have a score field.
+db.students.find({ age: { $gt: 20 }, score: { $lt: 80 } })
+
+3. Find all Students who live in “surat” OR “vadodara”
+�� Ensure your documents include a city field.
+db.students.find({ city: { $in: [&quot;surat&quot;, &quot;vadodara&quot;] } })
+
+4. Find all Students whose course is BCA
+
+db.students.find({ course: &quot;BCA&quot; })
+
+Find all faculties aged 35 or older who live in Surat, from “faculties” collection. Sort the
+results of the previous query by age, in ascending order. Find faculties whose salary is greater
+than or equal to 30000 and less than 250000. Sort the results of the previous query by salary,
+in descending order.
+
+1. Find all faculties aged 35 or older who live in Surat
+db.faculties.find({ age: { $gte: 35 }, city: &quot;Surat&quot; })
+
+2. Sort the results of the previous query by age (ascending order)
+db.faculties.find({ age: { $gte: 35 }, city: &quot;Surat&quot; }).sort({ age: 1 })
+ 1 → ascending
+ -1 → descending
+
+3. Find faculties whose salary is ≥ 30000 and &lt; 250000
+db.faculties.find({ salary: { $gte: 30000, $lt: 250000 } })
+
+4. Sort the results of the previous query by salary (descending order)
+db.faculties.find({ salary: { $gte: 30000, $lt: 250000 } }).sort({ salary: -1 })
+
+You said:
+Find top five faculties with highest salary. Find faculties whose name starts with “S”. Find
+faculties who are not from “Delhi”.
+
+1. Find top five faculties with highest salary
+�� Use sort() with -1 (descending) and limit(5)
+db.faculties.find().sort({ salary: -1 }).limit(5)
+
+2. Find faculties whose name starts with “S”
+
+�� Use regular expressions:
+db.faculties.find({ name: { $regex: /^S/, $options: &quot;i&quot; } })
+ ^S → means name starts with S
+ $options: &quot;i&quot; → makes it case-insensitive (so it matches S or s)
+
+3. Find faculties who are not from “Delhi”
+�� Use $ne (not equal):
+db.faculties.find({ city: { $ne: &quot;Delhi&quot; } })
+
+✅ These queries will help you:
+ Get top 5 salaries
+ Match names starting with S
+ Exclude faculties from Delhi
+You said:
+Update a single document into “students” collection (ex:- age:25). Update all students
+enrolled in the “BSC” course by setting their batch 2025.
+
+1. Update a single document (set age = 25)
+�� Suppose we want to update one student’s age to 25:
+db.students.updateOne(
+{ name: &quot;Ravi Kumar&quot; }, // filter condition
+{ $set: { age: 25 } } // update action
+)
+
+2. Update all students enrolled in the “BSC” course by setting their batch to 2025
+�� This updates multiple documents using updateMany:
+db.students.updateMany(
+{ course: &quot;BSC&quot; }, // filter condition
+{ $set: { batch: 2025 } } // update action
+
+)
+
+✅ After this:
+ One student’s age will be updated to 25.
+ All BSC students will get a new field batch: 2025.
+You said:
+Delete only one student named “Bob” from the “students” collection. Delete all documents
+from the “students” collection where the course is “BA”.
+
+1. Delete only one student named “Bob”
+db.students.deleteOne({ name: &quot;Bob&quot; })
+ deleteOne() deletes only the first document that matches the filter.
+
+2. Delete all documents where the course is “BA”
+db.students.deleteMany({ course: &quot;BA&quot; })
+ deleteMany() deletes all documents matching the filter condition.
+
+✅ After these commands:
+ Only one Bob will be removed.
+ All BA course students will be deleted.
+Do you want me to also show how to verify the deletion using find()?
+You said:
+Count the total students in the “students” collection who live in “surat”. Count the total
+faculties in the “faculties” collection whose department is BCA.
+
+1. Count total students who live in “Surat”
+db.students.countDocuments({ city: &quot;Surat&quot; })
+ countDocuments() counts all documents matching the filter.
+
+2. Count total faculties whose department is “BCA”
+db.faculties.countDocuments({ department: &quot;BCA&quot; })
+
+✅ After running these:
+ You’ll get the number of students in Surat
+ And the number of faculties in BCA department
+You said:
+Create a database named “collegeDB”. Create a collection named “course”. Drop a collection
+“course”. Drop database “collegeDB”.
+
+1. Create a database named collegeDB
+use collegeDB
+In MongoDB, the database is created automatically when you first insert data.
+
+2. Create a collection named course
+db.createCollection(&quot;course&quot;)
+
+3. Drop the collection course
+db.course.drop()
+ This deletes the collection and all its documents.
+
+4. Drop the database collegeDB
+use collegeDB
+db.dropDatabase()
+ This deletes the entire database along with all its collections.
+
+✅ After these commands:
+ Database collegeDB and collection course will be removed.
+You said:
+
+Create an index on the course field into “students” collection. View all Indexes of a collection
+“students”. Count the number of students enrolled in each distinct course.
+
+1. Create an index on the course field
+db.students.createIndex({ course: 1 })
+ 1 → ascending order
+ Indexing on course improves query performance for searches on that field.
+
+2. View all indexes of the students collection
+db.students.getIndexes()
+ This shows the default _id index plus the one we just created on course.
+
+3. Count the number of students enrolled in each distinct course
+We use aggregation for this:
+db.students.aggregate([
+{
+$group: {
+_id: &quot;$course&quot;, // group by course
+total_students: { $sum: 1 } // count students
+}
+}
+])
+✅ This will output something like:
+{ &quot;_id&quot;: &quot;BCA&quot;, &quot;total_students&quot;: 5 }
+{ &quot;_id&quot;: &quot;BBA&quot;, &quot;total_students&quot;: 3 }
+
+You said:
+Create an index on the Department field into “faculties” collection. Count the number of
+faculties of each distinct department.
+
+1. Create an index on the department field
+db.faculties.createIndex({ department: 1 })
+ 1 → ascending order
+ This improves performance for queries filtering by department.
+
+2. Count the number of faculties in each distinct department
+We use aggregation for this:
+db.faculties.aggregate([
+{
+$group: {
+_id: &quot;$department&quot;, // group by department
+total_faculties: { $sum: 1 } // count faculties
+}
+}
+])
+✅ This will output something like:
+{ &quot;_id&quot;: &quot;BCA&quot;, &quot;total_faculties&quot;: 4 }
+{ &quot;_id&quot;: &quot;Computer Science&quot;, &quot;total_faculties&quot;: 5 }
